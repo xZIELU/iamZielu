@@ -1,0 +1,32 @@
+<?php
+    session_start();
+    require_once 'config.php';
+
+    try {
+        $nickname = $_POST['nickname'];
+        $password = $_POST['password'];
+        //jesli zapytanie zostalo wyslane
+        if ($connect = $pdo->query($sql)) {
+            $users_number = $connect->num_rows;
+                if ($users_number > 0) {
+                    //poprawne logowanie
+                    header('Location: home.php');
+
+                    $fetch_tab = $connect->fetch();
+
+                    $_SESSION['user'] = $fetch_tab['nickname'];
+                } else {
+                    $_SESSION['error-users'] = "Uzytkownik o takich danych nie istanieje";
+                }
+        }
+    }
+    catch (PDOException $e) {
+        echo "Database's error";
+    }
+    
+    /** TO JAKO KOMENTARZ (config.php)
+    <?php
+
+    $pdo = new PDO("mysql:host=localhost;dbname=test", "root", "root");
+    $sql = "SELECT * FROM users WHERE nickname='login' AND password='$password'";
+      
